@@ -10,8 +10,22 @@
 export function level1(data) {
   const articles = data.articles;
   const carts = data.carts;
+  var result = {};
+  result.carts = [];
 
-  const result = {};
+  for (var i = 0; i<carts.length; i++){
+    var carttotal = 0; //initialize cart total to 0
+    //for each item in the cart, we need to look for the price and the quantity to calculate the cost
+    for (var j = 0; j < carts[i].items.length; j ++){  
+      for (var k = 0; k< articles.length; k++){
+        if (carts[i].items[j].article_id == articles[k].id){ 
+          carttotal = carttotal + carts[i].items[j].quantity * articles[k].price;
+        }
+      }
+    }
+    result.carts.push({id : carts[i].id, total : carttotal});
+  }
+
 
   return result;
 }
