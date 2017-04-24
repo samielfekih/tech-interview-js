@@ -41,7 +41,30 @@ export function level2(data) {
   const carts = data.carts;
   const deliveryFees = data.delivery_fees;
 
-  const result = {};
+  var result = {};
+  result.carts = [];
+
+  for (var i = 0; i<carts.length; i++){
+    var carttotal = 0; //initialize cart total to 0
+    //for each item in the cart, we need to look for the price and the quantity to calculate the cost
+    for (var j = 0; j < carts[i].items.length; j ++){  
+      for (var k = 0; k< articles.length; k++){
+        if (carts[i].items[j].article_id == articles[k].id){ 
+          carttotal = carttotal + carts[i].items[j].quantity * articles[k].price;
+        }
+      }
+    }
+    for (var j = 0; j<deliveryFees.length ; j++){
+      if (deliveryFees[j].eligible_transaction_volume.min_price <= carttotal) 
+        if (deliveryFees[j].eligible_transaction_volume.max_price == null || 
+          deliveryFees[j].eligible_transaction_volume.max_price > carttotal){
+          carttotal = carttotal + deliveryFees[j].price;
+          break;
+        }
+    }
+    result.carts.push({id : carts[i].id, total : carttotal});
+  }
+
 
   return result;
 }
